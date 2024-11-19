@@ -1,23 +1,22 @@
 package utils.auth;
 
 public class AuthenticationFactory {
-    private static Authentication instance;
+	private static Authentication instance;
 
-    private AuthenticationFactory() {
-    }
+	private AuthenticationFactory() {
+	}
 
-    public static synchronized Authentication getAuthentication() {
-        if (instance != null)
-            return instance;
+	public static synchronized Authentication getAuthentication() {
+		if (instance != null)
+			return instance;
 
-        String useAuth = System.getenv().getOrDefault("USE_AUTH", "TRUE");
+		String useAuth = System.getenv().getOrDefault("USE_AUTH", "TRUE");
 
-        if (useAuth.equals("TRUE"))
-            instance = new CookieAuthentication();
-        else
-            instance = new MockAuthentication();
+		if (useAuth.equals("TRUE"))
+			instance = new CookieAuthentication();
+		else
+			instance = new MockAuthentication();
 
-        return instance;
-    }
-
+		return instance;
+	}
 }

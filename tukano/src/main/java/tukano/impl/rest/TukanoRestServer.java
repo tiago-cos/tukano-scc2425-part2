@@ -4,14 +4,13 @@ import java.net.URI;
 import java.util.logging.Logger;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-
 import utils.Token;
 import utils.auth.RequestCookiesFilter;
 
 public class TukanoRestServer {
 	private static final Logger Log = Logger.getLogger(TukanoRestServer.class.getName());
 	private static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
-	private static final String HOST = System.getenv().getOrDefault("HOST", "localhost");
+	private static final String HOST = System.getenv().getOrDefault("HOST", "0.0.0.0");
 	private static final String SERVER_BASE_URI = "http://%s:%s/rest";
 
 	protected void start() throws Exception {

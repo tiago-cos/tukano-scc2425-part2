@@ -3,10 +3,9 @@
 	<session-factory>
 		<!-- JDBC Database connection settings -->
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
- 		<property name="hibernate.connection.url">jdbc:postgresql://c-scc7062471863.gqpsk4lllfstxg.postgres.cosmos.azure.com:5432/citus</property>
- 		<property name="hibernate.connection.username">citus</property>
- 		<property name="hibernate.connection.password">kLCb55NAww$aPEBh3</property>
-		<property name="hibernate.connection.requireSSL">true</property>
+ 		<property name="hibernate.connection.url">${DB_HOST}</property>
+ 		<property name="hibernate.connection.username">${DB_USERNAME}</property>
+ 		<property name="hibernate.connection.password">${DB_PASSWORD}</property>
 		<!-- JDBC connection pool settings ... using built-in test pool -->
 		<property name="connection.pool_size">64</property>
 		<!-- Echo the SQL to stdout -->

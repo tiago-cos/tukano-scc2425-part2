@@ -1,0 +1,39 @@
+services:
+  tukano-app:
+    build:
+      context: ./tukano
+    depends_on:
+      - redis
+      - postgres
+    image: tukano-app
+    container_name: tukano-app
+    environment:
+      - PORT=8080
+      - HOST=0.0.0.0
+      - EXTERNAL_HOST=localhost
+      - EXTERNAL_PORT=8080
+      - USE_CACHE=TRUE
+      - CACHE_TYPE=REDIS
+      - REDIS_HOST=redis
+      - REDIS_KEY=${REDIS_KEY}
+      - HIBERNATE_CONFIG=postgres.cfg.xml
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=postgres
+      - USE_AUTH=FALSE
+    ports:
+      - "8080:8080"
+
+  redis:
+    image: redis
+    container_name: redis
+    command: ["redis-server", "--requirepass", "${REDIS_KEY}"]
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}

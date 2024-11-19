@@ -6,11 +6,10 @@ import redis.clients.jedis.JedisPoolConfig;
 import utils.JSON;
 
 public class RedisCache implements Cache {
-	private static final String RedisHostname = "redis";
-	private static final String RedisKey = System.getenv("REDIS_KEY");
-	private static final int REDIS_PORT = 6380;
+	private static final String REDIS_HOST = System.getenv().getOrDefault("REDIS_HOST", "redis");
+	private static final String REDIS_KEY = System.getenv("REDIS_KEY");
+	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_TIMEOUT = 1000;
-	private static final boolean Redis_USE_TLS = true;
 
 	private JedisPool instance;
 
@@ -25,7 +24,7 @@ public class RedisCache implements Cache {
 		poolConfig.setNumTestsPerEvictionRun(3);
 		poolConfig.setBlockWhenExhausted(true);
 
-		instance = new JedisPool(poolConfig, RedisHostname, REDIS_PORT, REDIS_TIMEOUT, RedisKey, Redis_USE_TLS);
+		instance = new JedisPool(poolConfig, REDIS_HOST, REDIS_PORT, REDIS_TIMEOUT, REDIS_KEY);
 	}
 
 	@Override

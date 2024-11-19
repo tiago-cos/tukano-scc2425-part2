@@ -26,7 +26,21 @@ public class Hibernate {
 	private Hibernate() {
 		try {
 			String hibernateConfig = System.getenv().getOrDefault("HIBERNATE_CONFIG", "in-memory.cfg.xml");
-			sessionFactory = new Configuration().configure(hibernateConfig).buildSessionFactory();
+			Configuration cfg = new Configuration().configure(hibernateConfig);
+
+			if (hibernateConfig.equals("postgres.cfg.xml")) {
+				String dbUser = System.getenv().getOrDefault("DB_USER", "70624-71863");
+				String dbName = System.getenv().getOrDefault("DB_NAME", "postgres");
+				String dbHost = System.getenv().getOrDefault("DB_HOST", "postgres");
+				String dbPassword = System.getenv("DB_PASSWORD");
+				String dbUrl = String.format("jdbc:postgresql://%s:5432/%s", dbHost, dbName);
+
+				cfg.setProperty("hibernate.connection.url", dbUrl);
+				cfg.setProperty("hibernate.connection.username", dbUser);
+				cfg.setProperty("hibernate.connection.password", dbPassword);
+			}
+
+			sessionFactory = cfg.buildSessionFactory();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
