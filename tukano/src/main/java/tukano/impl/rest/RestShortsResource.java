@@ -4,16 +4,13 @@ import jakarta.inject.Singleton;
 import java.util.List;
 import tukano.api.rest.RestShorts;
 import tukano.api.service.Shorts;
-import tukano.impl.service.shorts.JavaShortsCosmosDatabase;
 import tukano.impl.service.shorts.JavaShortsHibernate;
 import tukano.models.ShortDTO;
 
 @Singleton
 public class RestShortsResource extends RestResource implements RestShorts {
 
-	static final Shorts impl = System.getenv("USE_POSTGRES") == null
-			? JavaShortsCosmosDatabase.getInstance()
-			: JavaShortsHibernate.getInstance();
+	static final Shorts impl = JavaShortsHibernate.getInstance();
 
 	@Override
 	public ShortDTO createShort(String userId, String password) {

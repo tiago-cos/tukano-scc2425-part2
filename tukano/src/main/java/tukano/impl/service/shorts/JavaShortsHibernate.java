@@ -10,17 +10,16 @@ import static tukano.api.util.Result.errorOrVoid;
 import static tukano.api.util.Result.ok;
 import static utils.DB.getOne;
 
+import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-
-import jakarta.ws.rs.core.Response;
 import tukano.api.service.Blobs;
 import tukano.api.service.Shorts;
 import tukano.api.util.Result;
 import tukano.impl.service.blobs.JavaBlobs;
-import tukano.impl.service.cache.RedisCache;
+import tukano.impl.service.cache.CacheFactory;
 import tukano.impl.service.database.DatabaseCommand;
 import tukano.impl.service.database.HibernateDatabase;
 import tukano.impl.service.users.JavaUsersHibernate;
@@ -28,7 +27,6 @@ import tukano.models.HibernateFollowing;
 import tukano.models.HibernateLikes;
 import tukano.models.HibernateShort;
 import tukano.models.ShortDTO;
-import utils.IP;
 import utils.Token;
 
 public class JavaShortsHibernate implements Shorts {
@@ -53,7 +51,9 @@ public class JavaShortsHibernate implements Shorts {
 
 		return errorOrResult(okUser(userId, password), user -> {
 			String shortId = format("%s!%s", userId, UUID.randomUUID());
-			String blobUrl = format("%s/%s/%s", IP.serverUri(), Blobs.NAME, shortId);
+			String externalHost = System.getenv().getOrDefault("EXTERNAL_HOST", "localhost");
+			String externalPort = System.getenv().getOrDefault("EXTERNAL_PORT", "8080");
+			String blobUrl = format("http://%s:%s/rest/%s/%s", externalHost, externalPort, Blobs.NAME, shortId);
 			HibernateShort shrt = new HibernateShort(shortId, userId, blobUrl);
 
 			return errorOrValue(DB.insertOne(shrt), s -> new ShortDTO(s, 0));
@@ -67,10 +67,10 @@ public class JavaShortsHibernate implements Shorts {
 		if (shortId == null)
 			return error(BAD_REQUEST);
 
-		long cachedLikes = RedisCache.getCounter(shortId);
+		long cachedLikes = CacheFactory.getCache().getCounter(shortId);
 		String query = format("SELECT count(*) FROM Likes l WHERE l.shortId = '%s'", shortId);
 		Long likes = cachedLikes == 0 ? DB.sql(query, Long.class).get(0) : cachedLikes;
-		RedisCache.setCounter(shortId, likes);
+		CacheFactory.getCache().setCounter(shortId, likes);
 
 		return errorOrValue(getOne(shortId, HibernateShort.class), shrt -> new ShortDTO(shrt, likes));
 	}
@@ -83,7 +83,7 @@ public class JavaShortsHibernate implements Shorts {
 			return errorOrResult(okUser(shrt.getOwnerId(), password), user -> {
 				JavaBlobs.getInstance().delete(shrt.getShortId(), Token.get(shrt.getShortId()));
 
-				RedisCache.deleteCounter(shortId);
+				CacheFactory.getCache().deleteCounter(shortId);
 
 				List<DatabaseCommand<?>> commands = new ArrayList<>();
 				commands.add(db -> db.deleteOne(new HibernateShort(shrt)));
@@ -131,9 +131,9 @@ public class JavaShortsHibernate implements Shorts {
 			HibernateLikes l = new HibernateLikes(userId, shortId, shrt.getOwnerId());
 			Result<Void> result = errorOrVoid(okUser(userId, password), isLiked ? DB.insertOne(l) : DB.deleteOne(l));
 			if (result.isOK() && isLiked)
-				RedisCache.incrementCounter(shortId);
+				CacheFactory.getCache().incrementCounter(shortId);
 			if (result.isOK() && !isLiked)
-				RedisCache.decrementCounter(shortId);
+				CacheFactory.getCache().decrementCounter(shortId);
 
 			return result;
 		});
@@ -187,8 +187,8 @@ public class JavaShortsHibernate implements Shorts {
 		List<String> userShorts = DB.sql(query0, String.class);
 
 		for (String shortId : userShorts) {
-			RedisCache.delete("shorts:" + shortId);
-			RedisCache.deleteCounter(shortId);
+			CacheFactory.getCache().delete("shorts:" + shortId);
+			CacheFactory.getCache().deleteCounter(shortId);
 		}
 
 		var query1 = format("DELETE FROM HibernateShort s WHERE s.ownerId = '%s'", userId);

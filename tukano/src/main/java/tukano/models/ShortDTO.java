@@ -32,15 +32,6 @@ public class ShortDTO {
 		this.views = 0;
 	}
 
-	public ShortDTO(CosmosDBShort cosmosDBShort) {
-		this.shortId = cosmosDBShort.getShortId();
-		this.ownerId = cosmosDBShort.getOwnerId();
-		this.blobUrl = cosmosDBShort.getBlobUrl() + "?token="
-				+ Token.get(cosmosDBShort.getBlobUrl().substring(cosmosDBShort.getBlobUrl().lastIndexOf('/') + 1));
-		this.timestamp = cosmosDBShort.getTimestamp();
-		this.totalLikes = cosmosDBShort.getTotalLikes();
-	}
-
 	public ShortDTO() {
 	}
 

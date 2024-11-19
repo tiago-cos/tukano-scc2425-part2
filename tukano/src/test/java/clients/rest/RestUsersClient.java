@@ -3,15 +3,12 @@ package clients.rest;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-
 import java.util.List;
 import tukano.api.rest.RestUsers;
-import tukano.api.service.Users;
 import tukano.api.util.Result;
 import tukano.models.UserDTO;
 
-public class RestUsersClient extends RestClient implements Users {
+public class RestUsersClient extends RestClient {
 
 	public RestUsersClient(String serverURI) {
 		super(serverURI, RestUsers.PATH);
@@ -22,10 +19,10 @@ public class RestUsersClient extends RestClient implements Users {
 				.post(Entity.entity(user, MediaType.APPLICATION_JSON)), String.class);
 	}
 
-	private Result<Response> _getUser(String userId, String pwd) {
+	private Result<UserDTO> _getUser(String userId, String pwd) {
 		return super.toJavaResult(
 				target.path(userId).queryParam(RestUsers.PWD, pwd).request().accept(MediaType.APPLICATION_JSON).get(),
-				Response.class);
+				UserDTO.class);
 	}
 
 	public Result<UserDTO> _updateUser(String userId, String password, UserDTO user) {
@@ -46,27 +43,22 @@ public class RestUsersClient extends RestClient implements Users {
 				});
 	}
 
-	@Override
 	public Result<String> createUser(UserDTO user) {
 		return super.reTry(() -> _createUser(user));
 	}
 
-	@Override
-	public Result<Response> getUser(String userId, String pwd) {
+	public Result<UserDTO> getUser(String userId, String pwd) {
 		return super.reTry(() -> _getUser(userId, pwd));
 	}
 
-	@Override
 	public Result<UserDTO> updateUser(String userId, String pwd, UserDTO user) {
 		return super.reTry(() -> _updateUser(userId, pwd, user));
 	}
 
-	@Override
 	public Result<UserDTO> deleteUser(String userId, String pwd) {
 		return super.reTry(() -> _deleteUser(userId, pwd));
 	}
 
-	@Override
 	public Result<List<UserDTO>> searchUsers(String pattern) {
 		return super.reTry(() -> _searchUsers(pattern));
 	}

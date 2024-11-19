@@ -11,7 +11,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
 import tukano.models.UserDTO;
 
@@ -27,7 +26,7 @@ public interface RestUsers {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	String createUser(UserDTO user);
+	Response createUser(UserDTO user);
 
 	@GET
 	@Path("/{" + USER_ID + "}")

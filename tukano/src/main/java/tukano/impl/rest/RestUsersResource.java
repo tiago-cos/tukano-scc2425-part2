@@ -2,11 +2,9 @@ package tukano.impl.rest;
 
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
 import tukano.api.rest.RestUsers;
 import tukano.api.service.Users;
-import tukano.impl.service.users.JavaUsersCosmosDatabase;
 import tukano.impl.service.users.JavaUsersHibernate;
 import tukano.models.UserDTO;
 
@@ -16,13 +14,11 @@ public class RestUsersResource extends RestResource implements RestUsers {
 	final Users impl;
 
 	public RestUsersResource() {
-		this.impl = System.getenv("USE_POSTGRES") == null
-				? JavaUsersCosmosDatabase.getInstance()
-				: JavaUsersHibernate.getInstance();
+		this.impl = JavaUsersHibernate.getInstance();
 	}
 
 	@Override
-	public String createUser(UserDTO user) {
+	public Response createUser(UserDTO user) {
 		return super.resultOrThrow(impl.createUser(user));
 	}
 

@@ -5,70 +5,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import clients.rest.RestBlobsClient;
 import clients.rest.RestShortsClient;
 import clients.rest.RestUsersClient;
-import jakarta.ws.rs.core.Response;
-
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import tukano.api.util.Result;
 import tukano.models.ShortDTO;
 import tukano.models.UserDTO;
-import utils.ConfigLoader;
-import utils.IP;
 
 public class TukanoTest {
-	private static Process serverProcess;
 	private static RestBlobsClient blobs;
 	private static RestUsersClient users;
 	private static RestShortsClient shorts;
 	private static String serverURI;
 
-	// Local testing
-	/* 
 	@BeforeAll
 	public static void startServer() throws Exception {
-		ProcessBuilder processBuilder = new ProcessBuilder("java", "-cp", "target/tukano-1-jar-with-dependencies.jar",
-				"tukano.impl.rest.TukanoRestServer");
-
-		ConfigLoader.getInstance().getProperties().forEach(
-				(key, value) -> processBuilder.environment().put((String) key, ((String) value).replace("\"", "")));
-
-		ConfigLoader.getInstance().getProperties().forEach((key, value) -> System.out.println(key + " " + value));
-
-		processBuilder.environment().put("HTTP_PLATFORM_PORT", "8080");
-		processBuilder.environment().put("WEBSITE_HOSTNAME", IP.hostname());
-
-		processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-		processBuilder.redirectError(ProcessBuilder.Redirect.INHERIT);
-
-		serverProcess = processBuilder.start();
-		Thread.sleep(1000);
-
 		serverURI = String.format("http://localhost:8080/rest");
 
 		blobs = new RestBlobsClient(serverURI);
 		users = new RestUsersClient(serverURI);
 		shorts = new RestShortsClient(serverURI);
 	}
-
-	@AfterAll
-	public static void stopServer() {
-		serverProcess.destroy();
-	}*/
-
-	// Azure testing
-	@BeforeAll public static void startAzureClient() throws Exception { 
-	serverURI = String.format("http://%s.azurewebsites.net/rest",
-	ConfigLoader.getInstance().getProperty("APP_NAME"));
-	
-	System.out.println(serverURI);
-	
-	blobs = new RestBlobsClient(serverURI); users = new
-	RestUsersClient(serverURI); shorts = new RestShortsClient(serverURI); 
-}
 
 	@Test
 	public void createUser() {
@@ -110,7 +68,7 @@ public class TukanoTest {
 		assert (result.isOK());
 		assertEquals(result.value(), "knuth");
 
-		Result<Response> result2 = users.getUser("knuth", "31415");
+		Result<UserDTO> result2 = users.getUser("knuth", "31415");
 
 		assert (result2.isOK());
 		assertEquals(result2.value(), knuth);
@@ -124,14 +82,14 @@ public class TukanoTest {
 		assert (result.isOK());
 		assertEquals(result.value(), "turing");
 
-		Result<Response> result2 = users.getUser("turing", "12345");
+		Result<UserDTO> result2 = users.getUser("turing", "12345");
 		assert (!result2.isOK());
 		assertEquals(result2.error(), Result.ErrorCode.FORBIDDEN);
 	}
 
 	@Test
 	public void getUserNotFound() {
-		Result<Response> result = users.getUser("nonexistent", "password");
+		Result<UserDTO> result = users.getUser("nonexistent", "password");
 		assert (!result.isOK());
 		assertEquals(result.error(), Result.ErrorCode.NOT_FOUND);
 	}
@@ -190,7 +148,7 @@ public class TukanoTest {
 		assert (result2.isOK());
 		assertEquals(result2.value(), mary);
 
-		Result<Response> result3 = users.getUser("mary", "bleh");
+		Result<UserDTO> result3 = users.getUser("mary", "bleh");
 		assert (!result3.isOK());
 		assertEquals(result3.error(), Result.ErrorCode.NOT_FOUND);
 	}

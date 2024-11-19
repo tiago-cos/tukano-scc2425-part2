@@ -1,8 +1,7 @@
 package tukano.api.service;
 
-import java.util.List;
-
 import jakarta.ws.rs.core.Response;
+import java.util.List;
 import tukano.api.util.Result;
 import tukano.models.UserDTO;
 
@@ -18,7 +17,7 @@ public interface Users {
 	 * @return OK - the userId of the user. CONFLICT - if the name already exists.
 	 *         BAD_REQUEST - otherwise.
 	 */
-	Result<String> createUser(UserDTO user);
+	Result<Response> createUser(UserDTO user);
 
 	/**
 	 * Obtains the information on the user identified by userId

@@ -8,17 +8,16 @@ import static tukano.api.util.Result.errorOrResult;
 import static tukano.api.util.Result.errorOrValue;
 import static tukano.api.util.Result.ok;
 
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-
-import jakarta.ws.rs.core.NewCookie;
-import jakarta.ws.rs.core.Response;
 import tukano.api.service.Users;
 import tukano.api.util.Result;
 import tukano.impl.service.blobs.JavaBlobs;
-import tukano.impl.service.cache.RedisCache;
+import tukano.impl.service.cache.CacheFactory;
 import tukano.impl.service.database.HibernateDatabase;
 import tukano.impl.service.shorts.JavaShortsHibernate;
 import tukano.models.HibernateFollowing;
@@ -45,21 +44,16 @@ public class JavaUsersHibernate implements Users {
 
 	private <T> Response addSession(String userId, T response) {
 		String sessionId = UUID.randomUUID().toString();
-		var cookie = new NewCookie.Builder("auth:session")
-			.value(sessionId)
-			.path("/")
-			.comment("sessionid")
-			.secure(false)
-			.httpOnly(true)
-			.build();
+		var cookie = new NewCookie.Builder("auth:session").value(sessionId).path("/").comment("sessionid").secure(false)
+				.httpOnly(true).build();
 
-		RedisCache.set(sessionId, new Session(sessionId, userId), 60 * 15);
+		CacheFactory.getCache().set(sessionId, new Session(sessionId, userId), 60 * 15);
 
 		return Response.ok(response).cookie(cookie).build();
 	}
 
 	@Override
-	public Result<String> createUser(UserDTO user) {
+	public Result<Response> createUser(UserDTO user) {
 		Log.info(() -> format("createUser : %s\n", user));
 
 		if (badUserInfo(user))
@@ -72,7 +66,7 @@ public class JavaUsersHibernate implements Users {
 		if (!res2.isOK())
 			return error(res2.error());
 
-		return errorOrValue(res, user.getUserId());
+		return errorOrValue(res, addSession(user.getUserId(), user.getUserId()));
 	}
 
 	@Override

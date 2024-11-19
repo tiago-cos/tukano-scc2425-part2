@@ -25,8 +25,8 @@ public class Hibernate {
 
 	private Hibernate() {
 		try {
-			sessionFactory = new Configuration().configure().buildSessionFactory();
-
+			String hibernateConfig = System.getenv().getOrDefault("HIBERNATE_CONFIG", "in-memory.cfg.xml");
+			sessionFactory = new Configuration().configure(hibernateConfig).buildSessionFactory();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

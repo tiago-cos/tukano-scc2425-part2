@@ -24,13 +24,6 @@ public class UserDTO {
 		this.displayName = hibernateUser.getDisplayName();
 	}
 
-	public UserDTO(CosmosDBUser cosmosDBUser) {
-		this.userId = cosmosDBUser.getUserId();
-		this.pwd = cosmosDBUser.getPwd();
-		this.email = cosmosDBUser.getEmail();
-		this.displayName = cosmosDBUser.getDisplayName();
-	}
-
 	public UserDTO() {
 	}
 

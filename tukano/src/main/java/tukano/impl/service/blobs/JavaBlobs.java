@@ -4,18 +4,13 @@ import static java.lang.String.format;
 import static tukano.api.util.Result.ErrorCode.FORBIDDEN;
 import static tukano.api.util.Result.error;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.logging.Logger;
 import tukano.api.service.Blobs;
 import tukano.api.util.Result;
-import tukano.impl.service.storage.AzureStorage;
 import tukano.impl.service.storage.BlobStorage;
+import tukano.impl.service.storage.FilesystemStorage;
 import utils.Hash;
 import utils.Hex;
-import utils.IP;
 import utils.Token;
 
 public class JavaBlobs implements Blobs {
@@ -25,7 +20,6 @@ public class JavaBlobs implements Blobs {
 
 	public String baseURI;
 	private BlobStorage storage;
-	private HttpClient client;
 
 	public static synchronized Blobs getInstance() {
 		if (instance == null)
@@ -34,9 +28,10 @@ public class JavaBlobs implements Blobs {
 	}
 
 	private JavaBlobs() {
-		storage = AzureStorage.getInstance();
-		baseURI = String.format("%s/%s/", IP.serverUri(), Blobs.NAME);
-		client = HttpClient.newHttpClient();
+		storage = new FilesystemStorage();
+		String externalHost = System.getenv().getOrDefault("EXTERNAL_HOST", "localhost");
+		String externalPort = System.getenv().getOrDefault("EXTERNAL_PORT", "8080");
+		baseURI = String.format("http://%s:%s/rest/%s/", externalHost, externalPort, Blobs.NAME);
 	}
 
 	@Override
@@ -61,16 +56,6 @@ public class JavaBlobs implements Blobs {
 
 		if (!result.isOK())
 			return result;
-
-		try {
-			String url = String.format("http://%s.azurewebsites.net/rest/blobs/%s", System.getenv("FUNCTIONS_NAME"),
-					blobId);
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
-
-			client.sendAsync(request, BodyHandlers.ofString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		return result;
 	}
