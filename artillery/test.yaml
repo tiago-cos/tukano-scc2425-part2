@@ -1,0 +1,56 @@
+config:
+  target: http://scc7062471863app.azurewebsites.net/rest
+  plugins:
+    metrics-by-endpoint: {}
+  processor: ./test-utils.js
+  phases:
+    - name: "Warm up"
+      duration: 10
+      arrivalRate: 1
+      rampTo: 5
+    - name: "Main test"
+      duration: 30
+      arrivalRate: 15
+
+scenarios:
+  - name: "createUser()"
+    weight: 1
+    flow:
+      - post:
+          url: /users
+          headers:
+            Content-Type: application/json
+            Accept: application/json
+          beforeRequest: "uploadRandomizedUser"
+          afterResponse: "storeUser"
+
+  - name: "getUser()"
+    weight: 1
+    flow:
+      - get:
+          url: /users/{userId}
+          headers:
+            Content-Type: application/json
+            Accept: application/json
+          beforeRequest: "requestUploadedUser"
+
+  - name: "createShort()"
+    weight: 1
+    flow:
+      - post:
+          url: /shorts/{userId}
+          headers:
+            Content-Type: application/json
+            Accept: application/json
+          beforeRequest: "uploadRandomizedShort"
+          afterResponse: "storeShort"
+
+  - name: "getShort()"
+    weight: 1
+    flow:
+      - get:
+          url: /shorts/{shortId}
+          headers:
+            Content-Type: application/json
+            Accept: application/json
+          beforeRequest: "requestUploadedShort"
