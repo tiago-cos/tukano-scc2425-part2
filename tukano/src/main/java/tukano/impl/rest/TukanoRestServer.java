@@ -4,8 +4,9 @@ import java.net.URI;
 import java.util.logging.Logger;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import utils.RequestCookiesFilter;
+
 import utils.Token;
+import utils.auth.RequestCookiesFilter;
 
 public class TukanoRestServer {
 	private static final Logger Log = Logger.getLogger(TukanoRestServer.class.getName());

@@ -1,4 +1,4 @@
-package utils;
+package utils.auth;
 
 import jakarta.ws.rs.core.Cookie;
 import java.util.Map;

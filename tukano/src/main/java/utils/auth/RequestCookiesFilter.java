@@ -1,4 +1,4 @@
-package utils;
+package utils.auth;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;

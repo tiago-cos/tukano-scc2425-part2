@@ -12,6 +12,7 @@ import tukano.impl.service.storage.FilesystemStorage;
 import utils.Hash;
 import utils.Hex;
 import utils.Token;
+import utils.auth.AuthenticationFactory;
 
 public class JavaBlobs implements Blobs {
 
@@ -39,7 +40,7 @@ public class JavaBlobs implements Blobs {
 		Log.info(() -> format("upload : blobId = %s, sha256 = %s, token = %s\n", blobId, Hex.of(Hash.sha256(bytes)),
 				token));
 
-		if (!validBlobId(blobId, token))
+		if (!validBlobId(blobId, token) || !AuthenticationFactory.getAuthentication().isAuthenticated())
 			return error(FORBIDDEN);
 
 		return storage.write(toPath(blobId), bytes);
@@ -49,7 +50,7 @@ public class JavaBlobs implements Blobs {
 	public Result<byte[]> download(String blobId, String token) {
 		Log.info(() -> format("download : blobId = %s, token=%s\n", blobId, token));
 
-		if (!validBlobId(blobId, token))
+		if (!validBlobId(blobId, token) || !AuthenticationFactory.getAuthentication().isAuthenticated())
 			return error(FORBIDDEN);
 
 		Result<byte[]> result = storage.read(toPath(blobId));
@@ -64,7 +65,7 @@ public class JavaBlobs implements Blobs {
 	public Result<Void> delete(String blobId, String token) {
 		Log.info(() -> format("delete : blobId = %s, token=%s\n", blobId, token));
 
-		if (!validBlobId(blobId, token))
+		if (!validBlobId(blobId, token) || !AuthenticationFactory.getAuthentication().validateSession("admin"))
 			return error(FORBIDDEN);
 
 		return storage.delete(toPath(blobId));
