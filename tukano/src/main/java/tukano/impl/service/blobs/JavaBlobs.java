@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import tukano.api.service.Blobs;
 import tukano.api.util.Result;
 import tukano.impl.service.storage.BlobStorage;
-import tukano.impl.service.storage.FilesystemStorage;
+import tukano.impl.service.storage.StorageFactory;
 import utils.Hash;
 import utils.Hex;
 import utils.Token;
@@ -29,7 +29,7 @@ public class JavaBlobs implements Blobs {
 	}
 
 	private JavaBlobs() {
-		storage = new FilesystemStorage();
+		storage = StorageFactory.getStorage();
 		String externalHost = System.getenv().getOrDefault("EXTERNAL_HOST", "localhost");
 		String externalPort = System.getenv().getOrDefault("EXTERNAL_PORT", "8080");
 		baseURI = String.format("http://%s:%s/rest/%s/", externalHost, externalPort, Blobs.NAME);
