@@ -20,7 +20,6 @@ import tukano.impl.service.blobs.JavaBlobs;
 import tukano.impl.service.cache.CacheFactory;
 import tukano.impl.service.database.HibernateDatabase;
 import tukano.impl.service.shorts.JavaShortsHibernate;
-import tukano.models.HibernateFollowing;
 import tukano.models.HibernateUser;
 import tukano.models.Session;
 import tukano.models.UserDTO;
@@ -60,11 +59,6 @@ public class JavaUsersHibernate implements Users {
 			return error(BAD_REQUEST);
 
 		Result<HibernateUser> res = DB.insertOne(new HibernateUser(user));
-		HibernateFollowing f = new HibernateFollowing(user.getUserId(), "tukanorecommends");
-		Result<HibernateFollowing> res2 = DB.insertOne(f);
-
-		if (!res2.isOK())
-			return error(res2.error());
 
 		return errorOrValue(res, addSession(user.getUserId(), user.getUserId()));
 	}

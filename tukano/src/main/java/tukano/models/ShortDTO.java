@@ -11,15 +11,13 @@ public class ShortDTO {
 	private String blobUrl;
 	private long timestamp;
 	private long totalLikes;
-	private long views;
 
-	public ShortDTO(String shortId, String ownerId, String blobUrl, long timestamp, int totalLikes, int views) {
+	public ShortDTO(String shortId, String ownerId, String blobUrl, long timestamp, int totalLikes) {
 		this.shortId = shortId;
 		this.ownerId = ownerId;
 		this.blobUrl = blobUrl;
 		this.timestamp = timestamp;
 		this.totalLikes = totalLikes;
-		this.views = views;
 	}
 
 	public ShortDTO(HibernateShort hibernateShort, long totalLikes) {
@@ -29,7 +27,6 @@ public class ShortDTO {
 				+ Token.get(hibernateShort.getBlobUrl().substring(hibernateShort.getBlobUrl().lastIndexOf('/') + 1));
 		this.timestamp = hibernateShort.getTimestamp();
 		this.totalLikes = totalLikes;
-		this.views = 0;
 	}
 
 	public ShortDTO() {
@@ -53,10 +50,6 @@ public class ShortDTO {
 
 	public long getTotalLikes() {
 		return totalLikes;
-	}
-
-	public long getViews() {
-		return views;
 	}
 
 	@Override

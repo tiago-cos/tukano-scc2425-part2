@@ -1,6 +1,8 @@
 package tukano.impl.rest;
 
 import jakarta.inject.Singleton;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.util.List;
 import tukano.api.rest.RestShorts;
 import tukano.api.service.Shorts;
@@ -13,8 +15,8 @@ public class RestShortsResource extends RestResource implements RestShorts {
 	static final Shorts impl = JavaShortsHibernate.getInstance();
 
 	@Override
-	public ShortDTO createShort(String userId, String password) {
-		return super.resultOrThrow(impl.createShort(userId, password));
+	public ShortDTO createShort(String userId, String password, UriInfo uriInfo) {
+		return super.resultOrThrow(impl.createShort(userId, password, uriInfo));
 	}
 
 	@Override

@@ -9,8 +9,6 @@ services:
     image: tukano-app
     container_name: tukano-app
     environment:
-      - EXTERNAL_HOST=localhost
-      - EXTERNAL_PORT=8080
       - CACHE_TYPE=REDIS
       - REDIS_KEY=${REDIS_KEY}
       - HIBERNATE_CONFIG=postgres.cfg.xml

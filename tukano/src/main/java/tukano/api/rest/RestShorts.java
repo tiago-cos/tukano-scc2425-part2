@@ -8,7 +8,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.util.List;
 import tukano.models.ShortDTO;
 
@@ -31,7 +34,7 @@ public interface RestShorts {
 	@POST
 	@Path("/{" + USER_ID + "}")
 	@Produces(MediaType.APPLICATION_JSON)
-	ShortDTO createShort(@PathParam(USER_ID) String userId, @QueryParam(PWD) String password);
+	ShortDTO createShort(@PathParam(USER_ID) String userId, @QueryParam(PWD) String password, @Context UriInfo uriInfo);
 
 	@DELETE
 	@Path("/{" + SHORT_ID + "}")

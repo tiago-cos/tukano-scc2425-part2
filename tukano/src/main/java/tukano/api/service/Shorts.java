@@ -1,6 +1,8 @@
 package tukano.api.service;
 
 import java.util.List;
+
+import jakarta.ws.rs.core.UriInfo;
 import tukano.api.util.Result;
 import tukano.models.ShortDTO;
 
@@ -30,7 +32,7 @@ public interface Shorts {
 	 *         short does not exist; FORBIDDEN, if the password is not correct;
 	 *         BAD_REQUEST, otherwise.
 	 */
-	Result<ShortDTO> createShort(String userId, String password);
+	Result<ShortDTO> createShort(String userId, String password, UriInfo uriInfo);
 
 	/**
 	 * Deletes a given Short.

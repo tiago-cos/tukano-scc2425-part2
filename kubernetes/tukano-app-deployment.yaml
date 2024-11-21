@@ -29,12 +29,6 @@ spec:
               done
       containers:
         - env:
-            - name: EXTERNAL_HOST
-              value: "192.168.49.2"
-
-            - name: EXTERNAL_PORT
-              value: "30080"
-
             - name: USE_AUTH
               value: "FALSE"
 

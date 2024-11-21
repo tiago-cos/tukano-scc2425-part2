@@ -11,6 +11,8 @@ import static tukano.api.util.Result.ok;
 import static utils.DB.getOne;
 
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,13 +48,13 @@ public class JavaShortsHibernate implements Shorts {
 	}
 
 	@Override
-	public Result<ShortDTO> createShort(String userId, String password) {
+	public Result<ShortDTO> createShort(String userId, String password, UriInfo uriInfo) {
 		Log.info(() -> format("createShort : userId = %s, pwd = %s\n", userId, password));
 
 		return errorOrResult(okUser(userId, password), user -> {
 			String shortId = format("%s!%s", userId, UUID.randomUUID());
-			String externalHost = System.getenv().getOrDefault("EXTERNAL_HOST", "localhost");
-			String externalPort = System.getenv().getOrDefault("EXTERNAL_PORT", "8080");
+			String externalHost = uriInfo.getBaseUri().getHost();
+			String externalPort = String.valueOf(uriInfo.getBaseUri().getPort());
 			String blobUrl = format("http://%s:%s/rest/%s/%s", externalHost, externalPort, Blobs.NAME, shortId);
 			HibernateShort shrt = new HibernateShort(shortId, userId, blobUrl);
 

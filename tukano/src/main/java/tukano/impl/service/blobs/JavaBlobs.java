@@ -19,7 +19,6 @@ public class JavaBlobs implements Blobs {
 	private static Blobs instance;
 	private static Logger Log = Logger.getLogger(JavaBlobs.class.getName());
 
-	public String baseURI;
 	private BlobStorage storage;
 
 	public static synchronized Blobs getInstance() {
@@ -30,9 +29,6 @@ public class JavaBlobs implements Blobs {
 
 	private JavaBlobs() {
 		storage = StorageFactory.getStorage();
-		String externalHost = System.getenv().getOrDefault("EXTERNAL_HOST", "localhost");
-		String externalPort = System.getenv().getOrDefault("EXTERNAL_PORT", "8080");
-		baseURI = String.format("http://%s:%s/rest/%s/", externalHost, externalPort, Blobs.NAME);
 	}
 
 	@Override
