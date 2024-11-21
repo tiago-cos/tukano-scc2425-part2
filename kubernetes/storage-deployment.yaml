@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: storage
+  name: storage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: storage
+  template:
+    metadata:
+      labels:
+        service: storage
+    spec:
+      containers:
+        - env:
+            - name: STORAGE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tukano-secrets
+                  key: BLOB_STORAGE_TOKEN
+
+          image: tsousa28/storage
+          name: storage
+          volumeMounts:
+            - mountPath: /tmp/blobs
+              name: storage-volume
+
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: storage-pvc
+          
+      restartPolicy: Always

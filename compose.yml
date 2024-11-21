@@ -5,26 +5,20 @@ services:
     depends_on:
       - redis
       - postgres
+      - storage
     image: tukano-app
     container_name: tukano-app
     environment:
-      - PORT=8080
-      - HOST=0.0.0.0
       - EXTERNAL_HOST=localhost
       - EXTERNAL_PORT=8080
-      - USE_CACHE=TRUE
       - CACHE_TYPE=REDIS
-      - REDIS_HOST=redis
       - REDIS_KEY=${REDIS_KEY}
       - HIBERNATE_CONFIG=postgres.cfg.xml
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - DB_HOST=postgres
-      - STORAGE_TYPE=REMOTE
-      - STORAGE_HOST=storage
-      - STORAGE_PORT=8081
-      - STORAGE_TOKEN=${STORAGE_TOKEN}
+      - BLOB_STORAGE_TYPE=REMOTE
+      - BLOB_STORAGE_TOKEN=${BLOB_STORAGE_TOKEN}
       - USE_AUTH=FALSE
     ports:
       - "8080:8080"
@@ -35,9 +29,7 @@ services:
     image: storage
     container_name: storage
     environment:
-      - PORT=8081
-      - HOST=0.0.0.0
-      - STORAGE_TOKEN=${STORAGE_TOKEN}
+      - STORAGE_TOKEN=${BLOB_STORAGE_TOKEN}
 
   redis:
     image: redis

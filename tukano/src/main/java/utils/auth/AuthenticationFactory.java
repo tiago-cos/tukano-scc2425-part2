@@ -10,7 +10,7 @@ public class AuthenticationFactory {
 		if (instance != null)
 			return instance;
 
-		String useAuth = System.getenv().getOrDefault("USE_AUTH", "TRUE");
+		String useAuth = System.getenv().getOrDefault("USE_AUTH", "FALSE");
 
 		if (useAuth.equals("TRUE"))
 			instance = new CookieAuthentication();

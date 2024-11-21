@@ -11,7 +11,7 @@ public class StorageFactory {
 		if (instance != null)
 			return instance;
 
-		String storageType = System.getenv().getOrDefault("STORAGE_TYPE", "REMOTE");
+		String storageType = System.getenv().getOrDefault("BLOB_STORAGE_TYPE", "LOCAL");
 
 		if (storageType.equals("REMOTE"))
 			instance = new RemoteStorage();

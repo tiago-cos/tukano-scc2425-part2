@@ -20,10 +20,10 @@ import utils.Sleep;
 
 public class RemoteStorage implements BlobStorage {
 
-	private static final String STORAGE_HOST = System.getenv().getOrDefault("STORAGE_HOST", "storage");
-	private static final String STORAGE_PORT = System.getenv().getOrDefault("STORAGE_PORT", "8081");
+	private static final String STORAGE_HOST = System.getenv().getOrDefault("BLOB_STORAGE_HOST", "storage");
+	private static final String STORAGE_PORT = System.getenv().getOrDefault("BLOB_STORAGE_PORT", "8081");
 	private static final String STORAGE_URL = String.format("http://%s:%s/rest/blobs", STORAGE_HOST, STORAGE_PORT);
-	private static final String STORAGE_TOKEN = String.format("Bearer %s", System.getenv("STORAGE_TOKEN"));
+	private static final String STORAGE_TOKEN = String.format("Bearer %s", System.getenv("BLOB_STORAGE_TOKEN"));
 
 	protected static final int MAX_RETRIES = 3;
 	protected static final int RETRY_SLEEP = 1000;

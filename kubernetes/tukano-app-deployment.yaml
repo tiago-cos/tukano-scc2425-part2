@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: tukano-app
+  name: tukano-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: tukano-app
+  template:
+    metadata:
+      labels:
+        service: tukano-app
+    spec:
+      initContainers:
+        - name: wait-for-pods
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -zv redis 6379 && \
+                    nc -zv postgres 5432 && \
+                    nc -zv storage 8081; do
+                echo "Waiting for pods to be ready..."
+                sleep 2
+              done
+      containers:
+        - env:
+            - name: EXTERNAL_HOST
+              value: "192.168.49.2"
+
+            - name: EXTERNAL_PORT
+              value: "30080"
+
+            - name: USE_AUTH
+              value: "FALSE"
+
+            - name: CACHE_TYPE
+              value: "REDIS"
+
+            - name: REDIS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tukano-secrets
+                  key: REDIS_KEY
+
+            - name: HIBERNATE_CONFIG
+              value: "postgres.cfg.xml"
+
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tukano-secrets
+                  key: DB_USER
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tukano-secrets
+                  key: DB_PASSWORD
+
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: tukano-secrets
+                  key: DB_NAME
+
+            - name: BLOB_STORAGE_TYPE
+              value: "REMOTE"
+
+            - name: BLOB_STORAGE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: tukano-secrets
+                  key: BLOB_STORAGE_TOKEN
+
+          image: tsousa28/tukano-app
+          name: tukano-app
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+      restartPolicy: Always

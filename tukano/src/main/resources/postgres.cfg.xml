@@ -3,7 +3,7 @@
 	<session-factory>
 		<!-- JDBC Database connection settings -->
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
- 		<property name="hibernate.connection.url">${DB_HOST}</property>
+ 		<property name="hibernate.connection.url">jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}</property>
  		<property name="hibernate.connection.username">${DB_USERNAME}</property>
  		<property name="hibernate.connection.password">${DB_PASSWORD}</property>
 		<!-- JDBC connection pool settings ... using built-in test pool -->
