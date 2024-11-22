@@ -21,7 +21,7 @@ public class TukanoTest {
 
 	@BeforeAll
 	public static void startServer() throws Exception {
-		serverURI = String.format("http://192.168.49.2:30080/rest");
+		serverURI = String.format("https://scc7062471863app.azurewebsites.net/rest");
 
 		blobs = new RestBlobsClient(serverURI);
 		users = new RestUsersClient(serverURI);
