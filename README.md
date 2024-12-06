@@ -1,7 +1,10 @@
-
 # Tukano Application Deployment Instructions
 
 This guide provides instructions to deploy the Tukano application either **locally** using Docker Compose or on **Kubernetes**. 
+
+### **Authors**
+- Beatriz de Caiola Machado, 71863, bc.machado@campus.fct.unl.pt
+- Tiago Costa Sousa, 70624, tco.sousa@campus.fct.unl.pt
 
 ### **Disclaimer**
 The application is pre-configured with default values that work out of the box for deployment. You can skip the environment variables section if you don’t need to customize these configurations.
